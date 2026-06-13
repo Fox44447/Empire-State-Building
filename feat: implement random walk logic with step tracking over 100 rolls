@@ -1,0 +1,56 @@
+# ==============================================================================
+# PROJECT: Random Walk Simulation (Empire State Building Game)
+# GOAL: Track the entire journey (step by step) over 100 dice rolls.
+# ==============================================================================
+
+import numpy as np
+
+# Set the seed for reproducibility (so we get the same results for testing)
+np.random.seed(123)
+
+# --- INITIALIZATION ---
+# Initialize the random_walk list. 
+# We start at step 0 (the ground floor). 
+# Brackets [] mean this is a list that will store our entire journey history.
+random_walk = [0]
+
+# --- MAIN LOOP ---
+# A 'for' loop that will run exactly 100 times.
+# We are no longer waiting to reach a specific step; we are just throwing the dice 100 times.
+for x in range(100):
+    
+    # Grab the current position.
+    # [-1] is a brilliant Python trick: it always selects the LAST element of the list.
+    # We look at where we ended up in the previous turn before calculating the new move.
+    step = random_walk[-1]
+    
+    # Roll the dice (generates an integer from 1 to 6)
+    dice = np.random.randint(1, 7)
+    
+    # --- GAME LOGIC ---
+    if dice <= 2:
+        # RULE 1: Roll 1 or 2 -> go down one step
+        step = step - 1
+        
+        # Floor guard: max() prevents the player from going into negative steps (basement).
+        # E.g., if step is -1, max(0, -1) will force it back to 0.
+        step = max(0, step)
+        
+    elif dice <= 5:
+        # RULE 2: Roll 3, 4, or 5 -> go up one step
+        step = step + 1
+        
+    else:
+        # RULE 3: Roll 6 -> bonus roll! 
+        # Add the new random number (1 to 6) to the current step.
+        step = step + np.random.randint(1, 7)
+        
+    # --- RECORD THE STEP ---
+    # .append() takes the newly calculated step and adds it to the very end of our list.
+    # This builds the history of our entire walk, turn by turn.
+    random_walk.append(step)
+
+# --- OUTPUT ---
+# Print the entire list to the console to see every single step we took.
+# It will look like an array of numbers (e.g., [0, 1, 2, 1, 2, ...])
+print(random_walk)
