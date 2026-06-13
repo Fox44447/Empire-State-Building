@@ -1,0 +1,51 @@
+import numpy as np  # Import library for math operations and random number generation
+
+# Setting the seed ensures reproducibility. We'll get the same random numbers 
+# every time we run the script, which is great for testing.
+np.random.seed(123)
+
+# --- GAME INITIALIZATION ---
+step = 50          # Starting position (halfway up the building)
+total_throws = 0   # Counter to track the total number of dice rolls
+
+# --- MAIN GAME LOOP ---
+# The 'while' loop runs as long as our step is less than 100.
+# Once we hit 100 or more, the condition becomes False and the game ends.
+while step < 100:
+    total_throws += 1  # Increment the throw counter by 1 for each loop iteration
+
+    # --- STEP 1: ROLL THE DICE ---
+    # randint(1, 7) generates a random integer from 1 (inclusive) to 7 (exclusive): {1,2,3,4,5,6}
+    dice = np.random.randint(1, 7)
+
+    # --- STEP 2: ANALYZE THE ROLL (Game Logic) ---
+    if dice <= 2:
+        # RULE 1: Rolling 1 or 2 means you go one step down.
+        step = step - 1
+        # max(0, step) prevents the player from falling BELOW step 0 (no negative steps).
+        step = max(0, step)
+
+    elif 2 < dice < 6:
+        # RULE 2: Rolling 3, 4, or 5 means you go one step up.
+        step = step + 1
+
+    else:
+        # RULE 3: Rolling a 6 gives you a bonus throw.
+        # You roll again and move up by the number of steps rolled.
+        bonus_throw = np.random.randint(1, 7)
+        step = step + bonus_throw
+
+    # --- STEP 3: THE ROADBLOCK (0.1% chance of falling) ---
+    # np.random.rand() generates a random float between 0.0 and 1.0.
+    # 0.1% equals 0.001. If the random number is less than or equal to 0.001, you fall.
+    if np.random.rand() <= 0.001:
+        step = 0  # Reset position to the very bottom
+        print(" Oh no! You slipped on the stairs and fell all the way down to step 0!")
+
+# --- GAME SUMMARY ---
+# This block only executes AFTER the 'while' loop finishes (when step >= 100).
+print("==================================================")
+print(" CONGRATULATIONS! You reached the top of the Empire State Building!")
+print(f"Your final step is: {step}")
+print(f"It took you {total_throws} dice rolls to get there.")
+print("==================================================")
